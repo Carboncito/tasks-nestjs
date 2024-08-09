@@ -7,10 +7,11 @@ import { User, UserDocument } from 'schemas/user.schema';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(userDto: { email: string; password: string }) {
+  async create(userDto: User) {
     const exist = await this.userModel.find({ email: userDto.email }).exec();
 
-    if (exist) throw new ConflictException('Email is already registered');
+    if (exist.length)
+      throw new ConflictException('Email is already registered');
 
     const user = new this.userModel(userDto);
     return user.save();
