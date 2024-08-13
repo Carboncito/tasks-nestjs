@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
+  Param,
   Post,
+  Put,
   Query,
   Request,
 } from '@nestjs/common';
@@ -17,6 +20,7 @@ import {
 import { UserRequest } from 'src/common/interfaces/user-request.interface';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UserService } from 'src/user/user.service';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -51,5 +55,29 @@ export class ProjectController {
   @Post()
   create(@Body() projectDto: CreateProjectDto) {
     return this.projectsService.create(projectDto);
+  }
+
+  @Put(':projectId')
+  async update(
+    @Param('projectId') projectId: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
+    const project = await this.projectsService.update(
+      projectId,
+      updateProjectDto,
+    );
+
+    if (!project) throw new NotFoundException('Project not found');
+
+    return project;
+  }
+
+  @Delete(':projectId')
+  async delete(@Param('projectId') projectId: string) {
+    const project = await this.projectsService.delete(projectId);
+
+    if (!project) throw new NotFoundException('Project not found');
+
+    return project;
   }
 }
