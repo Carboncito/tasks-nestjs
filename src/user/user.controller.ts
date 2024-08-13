@@ -32,8 +32,9 @@ export class UserController {
   ) {
     const user = await this.userService.findById(request.user.id);
 
-    if (!user?.currentProjectId)
-      throw new ConflictException("User doesn't have an assigned project");
+    if (!user?.currentProjectId) {
+      return this.userService.addProject(user._id as string, dto.projectId);
+    }
 
     if (user.currentProjectId === dto.projectId)
       throw new ConflictException(

@@ -62,10 +62,7 @@ export class UserService {
       .exec();
   }
 
-  async addProject(
-    userId: Types.ObjectId,
-    projectId: Types.ObjectId,
-  ): Promise<User> {
+  async addProject(userId: string, projectId: Types.ObjectId): Promise<User> {
     return this.userModel
       .findByIdAndUpdate(
         userId,
@@ -77,6 +74,7 @@ export class UserService {
               endDate: null,
             },
           },
+          currentProjectId: projectId,
         },
         { new: true },
       )
@@ -94,5 +92,9 @@ export class UserService {
         { new: true },
       )
       .exec();
+  }
+
+  async getUsersByProjectId(projectId: string) {
+    return this.userModel.find({ currentProjectId: projectId });
   }
 }
