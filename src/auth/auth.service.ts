@@ -1,6 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import { UserRequest } from '../common/interfaces/user-request.interface';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +16,10 @@ export class AuthService {
 
     if (user?.password !== pass) throw new UnauthorizedException();
 
-    const payload = { name: user.name };
-    delete user.password;
+    const payload: UserRequest['user'] = {
+      id: user._id as Types.ObjectId,
+      email: user.email,
+    };
 
     return { token: await this.jwtService.signAsync(payload) };
   }
