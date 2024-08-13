@@ -6,14 +6,14 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserController } from './user/user.controller';
 import { ProjectsModule } from './projects/projects.module';
+import { TasksModule } from './tasks/tasks.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    AuthModule,
-    UserModule,
+    EventEmitterModule.forRoot(),
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],
@@ -31,9 +31,12 @@ import { ProjectsModule } from './projects/projects.module';
         dbName: configService.get<string>('MONGODB_DB_NAME'),
       }),
     }),
+    AuthModule,
+    UserModule,
     ProjectsModule,
+    TasksModule,
   ],
-  controllers: [AppController, UserController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
