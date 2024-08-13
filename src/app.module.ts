@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserController } from './user/user.controller';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { UserController } from './user/user.controller';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '24h' },
       }),
     }),
     MongooseModule.forRootAsync({
@@ -30,6 +31,7 @@ import { UserController } from './user/user.controller';
         dbName: configService.get<string>('MONGODB_DB_NAME'),
       }),
     }),
+    ProjectsModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService],
