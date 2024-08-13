@@ -12,7 +12,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'dev' ? `.env.development.local` : '.env',
+    }),
     EventEmitterModule.forRoot(),
     JwtModule.registerAsync({
       global: true,
