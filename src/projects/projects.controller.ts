@@ -40,7 +40,11 @@ export class ProjectController {
     if (!currentProjectId)
       throw new NotFoundException("User doesn't have an assigned project");
 
-    return this.projectsService.findById(currentProjectId);
+    return user.projects.map((project) => ({
+      ...project.projectId,
+      ...project,
+      projectId: project.projectId._id,
+    }));
   }
   // findById
   // create

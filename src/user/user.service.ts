@@ -27,7 +27,11 @@ export class UserService {
   }
 
   async findById(id: Types.ObjectId): Promise<UserDocument | undefined> {
-    return this.userModel.findById(id).lean().exec();
+    return this.userModel
+      .findById(id)
+      .populate('projects.projectId', 'name description _id')
+      .lean()
+      .exec();
   }
 
   async findOne(email: string): Promise<UserDocument | undefined> {
