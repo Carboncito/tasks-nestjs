@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -74,10 +75,15 @@ export class ProjectController {
 
   @Delete(':projectId')
   async delete(@Param('projectId') projectId: string) {
-    const project = await this.projectsService.delete(projectId);
+    const users = await this.userService.getUsersByProjectId(projectId);
 
-    if (!project) throw new NotFoundException('Project not found');
+    if (users.length)
+      throw new ConflictException(`Project with ${projectId} id has partners`);
 
-    return project;
+    const projectDeleted = await this.projectsService.delete(projectId);
+
+    if (!projectDeleted) throw new NotFoundException('Project not found');
+
+    return projectDeleted;
   }
 }
