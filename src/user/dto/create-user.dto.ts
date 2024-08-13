@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsDateString,
   IsEmail,
   IsNotEmpty,
@@ -8,7 +7,7 @@ import {
 } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class UserDto {
+export class CreateUserDto {
   @IsEmail()
   @IsString()
   @IsNotEmpty()
@@ -23,8 +22,8 @@ export class UserDto {
   name?: string;
 
   @IsOptional()
-  @IsArray()
-  readonly projects?: Types.ObjectId[];
+  @IsString()
+  readonly currentProjectId?: Types.ObjectId;
 
   @IsOptional()
   @IsDateString()
