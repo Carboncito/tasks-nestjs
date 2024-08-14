@@ -1,13 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { User, UserDocument } from 'schemas/user.schema';
+import { User, UserDocument } from '../../schemas/user.schema';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(userDto: Partial<User>) {
+  async create(userDto: Partial<User>): Promise<UserDocument> {
     const exist = await this.userModel.find({ email: userDto.email }).exec();
 
     if (exist.length)
@@ -42,7 +42,7 @@ export class UserService {
     userId: Types.ObjectId,
     currentProjectId: Types.ObjectId,
     newProjectId: Types.ObjectId,
-  ) {
+  ): Promise<UserDocument | undefined> {
     await this.removeProject(userId, currentProjectId);
     return this.userModel
       .findByIdAndUpdate(

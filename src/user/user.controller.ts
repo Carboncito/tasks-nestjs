@@ -9,10 +9,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Public } from 'src/common/decorators/Public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateProjectUserDto } from './dto/update-project-user.dto';
-import { UserRequest } from 'src/common/interfaces/user-request.interface';
+import { Public } from 'common/decorators/Public.decorator';
+import { UserRequest } from 'common/interfaces/user-request.interface';
 
 @Controller('user')
 export class UserController {

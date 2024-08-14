@@ -30,7 +30,6 @@ export class User {
   projects: ProjectInfo[];
 
   @Prop({ type: Date })
-  @Prop()
   birthday?: Date;
 
   @Prop({ type: Types.ObjectId })
