@@ -37,6 +37,13 @@ jobs:
       - name: Build project
         run: yarn run build
 
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.EC2_HOST }}
+        run: |
+          echo "SUPER_SECRET: $SUPER_SECRET"
+          echo "yarn: $(yarn --version)"
+
       - name: Log Environment Variables
         run: |
           echo "Logging environment variables..."
