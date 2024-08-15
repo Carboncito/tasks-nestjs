@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Project, ProjectDocument } from 'schemas/project.schema';
-import { Task, TaskDocument } from 'schemas/task.schema';
+import { Project, ProjectDocument } from '../../schemas/project.schema';
+import { Task, TaskDocument } from '../../schemas/task.schema';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';

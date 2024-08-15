@@ -18,9 +18,9 @@ import {
   QueryParamsProjects,
   QueryParamsProjectsPipe,
 } from './pipe/query-params-projects/query-params-projects.pipe';
-import { UserRequest } from 'src/common/interfaces/user-request.interface';
+import { UserRequest } from 'common/interfaces/user-request.interface';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'user/user.service';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('projects')
