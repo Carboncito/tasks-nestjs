@@ -11,6 +11,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HOST: ${{ secrets.EC2_HOST }}
+      USERNAME: ${{ secrets.EC2_USER }}
+      KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      PORT: ${{ secrets.EC2_PORT }}
+      APP_DIRECTORY: ${{ secrets.EC2_APP_DIRECTORY }}
+
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
@@ -19,9 +26,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '20'
-
-      - name: Set up yarn
-        run: npm install --global yarn
 
       - name: Install dependencies
         run: yarn install
@@ -35,32 +39,31 @@ jobs:
       - name: Copy package.json
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_PORT }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.EC2_PORT }}
           source: ./package.json
-          target: ${{ secrets.EC2_APP_DIRECTORY }}
+          target: ${{ env.EC2_APP_DIRECTORY }}
 
       - name: Copy files
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_PORT }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.EC2_PORT }}
           source: ./dist/*
-          target: ${{ secrets.EC2_APP_DIRECTORY }}
+          target: ${{ env.EC2_APP_DIRECTORY }}
 
       - name: Run service in EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.EC2_PORT }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.EC2_PORT }}
           script: |
-            echo "Nice Job!!!"
-            cd ${{ secrets.EC2_APP_DIRECTORY }}
-            yarn install --production
+            cd ${{ env.EC2_APP_DIRECTORY }}
+            yarn install --frozen-lockfile --production
             pm2 restart all || pm2 start dist/src/main.js --name "tasks-nestjs"
