@@ -27,10 +27,22 @@ jobs:
       - name: Run tests
         run: yarn test
 
+      - name: Check if EC2 instance is reachable
+        id: ping-server
+        run: |
+          if ! ping -c 1 ${{ secrets.EC2_IP }} > /dev/null; then
+            echo "EC2 instance is not reachable."
+            echo "continue=false" >> $GITHUB_ENV
+          else
+            echo "continue=true" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
+
       - name: Build project
         run: yarn run build
 
       - name: Copy package.json
+        if: env.continue == 'true'
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -41,6 +53,7 @@ jobs:
           target: ${{ secrets.EC2_APP_DIRECTORY }}
 
       - name: Copy files
+        if: env.continue == 'true'
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -51,6 +64,7 @@ jobs:
           target: ${{ secrets.EC2_APP_DIRECTORY }}
 
       - name: Run service in EC2
+        if: env.continue == 'true'
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
