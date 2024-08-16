@@ -30,7 +30,7 @@ jobs:
       - name: Check if EC2 instance is running
         id: check-service
         run: |
-          RESPONSE=$(curl --max-time 10 -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000)
+          RESPONSE=$(curl --max-time 10 -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000 || echo "timeout")
           echo "$RESPONSE"
           if [ "$RESPONSE" -ne 200 ]; then
             echo "EC2 instance is not accessible."
