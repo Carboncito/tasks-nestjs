@@ -33,12 +33,12 @@ jobs:
         run: yarn test
 
       - name: Check if EC2 instance is running
-        id: ec2-status
+        id: check-service
         run: |
-          instance_status=$(aws ec2 describe-instance-status --instance-ids ${{ secrets.INSTANCE_ID }} --query 'InstanceStatuses[0].InstanceState.Name' --output text)
-          echo "EC2 instance status: $instance_status"
-          if [ "$instance_status" != "running" ]; then
-            echo "EC2 instance is not running."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000)
+          echo RESPONSE
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "EC2 instance is not accessible."
             echo "continue=false" >> $GITHUB_ENV
           else
             echo "continue=true" >> $GITHUB_ENV
