@@ -20,53 +20,36 @@ jobs:
           EC2_APP_DIRECTORY: ${{secrets.EC2_APP_DIRECTORY}}
           TEST: 'TEST:ENV'
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
 
-      # - name: Set up yarn
-      #   run: npm install --global yarn
+      - name: Set up yarn
+        run: npm install --global yarn
 
-      # - name: Install dependencies
-      #   run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
-      # - name: Run tests
-      #   run: yarn test
+      - name: Run tests
+        run: yarn test
 
-      # - name: Build project
-      #   run: yarn run build
-      #   run: yarn test
-
-      - name: Start SSH Agent and add Key
-        run: |
-          eval $(ssh-agent -s)
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Verify SSH Private Key
-        run: |
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "SSH_PRIVATE_KEY is not set!"
-            exit 1
-          else
-            echo "SSH_PRIVATE_KEY is set."
-          fi
+      - name: Build project
+        run: yarn run build
+        run: yarn test
 
       - name: Set up SSH
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: 'just-a-placeholder'
-
-      # - name: Deploy to EC2
-      #   run: |
-      #     echo "$PRIVATE_KEY" > private_key.pem && chmod 400 private_key.pem
-      #     scp -r ./package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
-      #     scp -r ./dist/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
-      #     ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
-      #     cd ${{ secrets.EC2_APP_DIRECTORY }}
-      #     yarn install --production
-      #     yarn run start:prod
-      #     EOF
+# echo "$PRIVATE_KEY" > private_key.pem && chmod 400 private_key.pem
+      - name: Deploy to EC2
+        run: |
+          scp -r ./package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
+          scp -r ./dist/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
+          cd ${{ secrets.EC2_APP_DIRECTORY }}
+          yarn install --production
+          yarn run start:prod
+          EOF
