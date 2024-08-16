@@ -30,13 +30,14 @@ jobs:
       - name: Check if EC2 instance is running
         id: check-service
         run: |
-          RESPONSE=$(curl --max-time 10 -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000 || echo "timeout")
+          RESPONSE=$(curl --max-time 5 -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000 || echo "timeout")
           echo "$RESPONSE"
-          if [ "$RESPONSE" -ne 200 ]; then
+          if [ $RESPONSE == 200 ]
+          then
+            echo "continue=true" >> $GITHUB_ENV
+          else
             echo "EC2 instance is not accessible."
             echo "continue=false" >> $GITHUB_ENV
-          else
-            echo "continue=true" >> $GITHUB_ENV
           fi
 
       - name: Build project
