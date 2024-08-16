@@ -56,18 +56,18 @@ jobs:
           source: ./dist/*
           target: ${{ secrets.EC2_APP_DIRECTORY }}
 
-        - name: Run service in EC2
-          uses: appleboy/ssh-action@v0.1.10
-          with:
-            host: ${{ secrets.EC2_HOST }}
-            username: ${{ secrets.EC2_USER }}
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            port: ${{ secrets.EC2_PORT }}
-            script: |
-              echo "Nice Job!!!"
-              cd ${{ secrets.EC2_APP_DIRECTORY }}
-              yarn install --production
-              yarn run start:prod
+      - name: Run service in EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          script: |
+            echo "Nice Job!!!"
+            cd ${{ secrets.EC2_APP_DIRECTORY }}
+            yarn install --production
+            yarn run start:prod
 
       # - name: Send package.json
       #   run: |
