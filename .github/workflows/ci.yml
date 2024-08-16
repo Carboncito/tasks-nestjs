@@ -36,7 +36,6 @@ jobs:
 
       - name: Build project
         run: yarn run build
-        run: yarn test
 
       - name: Set up SSH
         uses: shimataro/ssh-key-action@v2
