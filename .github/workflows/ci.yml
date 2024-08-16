@@ -37,11 +37,21 @@ jobs:
       - name: Build project
         run: yarn run build
 
-      - name: Deploy to EC2
+      - name: Create key
         run: |
           echo "$PRIVATE_KEY" > private_key.pem && chmod 400 private_key.pem
+
+      - name: Send package.json
+        run: |
           scp -i ./private_key.pem ./package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
+          echo "$PRIVATE_KEY" > private_key.pem && chmod 400 private_key.pem
+
+      - name: Send files
+        run: |
           scp -i ./private_key.pem -r ./dist/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
+
+      - name: Deploy to EC2
+        run: |
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
           cd ${{ secrets.EC2_APP_DIRECTORY }}
           yarn install --production
