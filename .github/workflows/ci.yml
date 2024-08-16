@@ -38,6 +38,13 @@ jobs:
       #   run: yarn run build
       #   run: yarn test
 
+      - name: Start SSH Agent and add Key
+        run: |
+          eval $(ssh-agent -s)
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add -
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Verify SSH Private Key
         run: |
           if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
