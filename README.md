@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+Challenge from: [SelectCode](https://apply.selectcode.de/challenges/micro/backend/nestjs)
+
 ## Installation
 
 ```bash
