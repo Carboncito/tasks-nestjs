@@ -14,6 +14,8 @@
 
 Challenge from: [SelectCode](https://apply.selectcode.de/challenges/micro/backend/nestjs)
 
+There is a docker container for mongodb.
+
 ## Installation
 
 ```bash
