@@ -11,12 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      HOST: ${{ secrets.EC2_HOST }}
-      USERNAME: ${{ secrets.EC2_USER }}
-      KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      PORT: ${{ secrets.EC2_PORT }}
-      APP_DIRECTORY: ${{ secrets.EC2_APP_DIRECTORY }}
 
     steps:
       - name: Check out the code
@@ -39,31 +33,31 @@ jobs:
       - name: Copy package.json
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_USER }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          port: ${{ env.EC2_PORT }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.EC2_PORT }}
           source: ./package.json
-          target: ${{ env.EC2_APP_DIRECTORY }}
+          target: ${{ secrets.EC2_APP_DIRECTORY }}
 
       - name: Copy files
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_USER }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          port: ${{ env.EC2_PORT }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.EC2_PORT }}
           source: ./dist/*
-          target: ${{ env.EC2_APP_DIRECTORY }}
+          target: ${{ secrets.EC2_APP_DIRECTORY }}
 
       - name: Run service in EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_USER }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          port: ${{ env.EC2_PORT }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.EC2_PORT }}
           script: |
-            cd ${{ env.EC2_APP_DIRECTORY }}
+            cd ${{ secrets.EC2_APP_DIRECTORY }}
             yarn install --frozen-lockfile --production
             pm2 restart all || pm2 start dist/src/main.js --name "tasks-nestjs"
