@@ -44,7 +44,8 @@ jobs:
           echo "-------"
           echo "EC2_USER: $EC2_USER"
           echo "EC2_USER: $EC2_USER"
-          echo "EC2_USER: $($EC2_USER)"
+          echo EC2_USER
+          echo $EC2_USER
           echo "Node.js Version: $(node -v)"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -55,8 +56,7 @@ jobs:
 
       - name: Send package.json
         run: |
-          scp -i ./private_key.pem ./package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
-          echo "$PRIVATE_KEY" > private_key.pem && chmod 400 private_key.pem
+          scp -i private_key.pem ./package.json ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_APP_DIRECTORY }}
 
       - name: Send files
         run: |
