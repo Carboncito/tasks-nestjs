@@ -21,11 +21,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
       - name: Install dependencies
         run: yarn install
 
@@ -36,7 +31,7 @@ jobs:
         id: check-service
         run: |
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_IP }}:3000)
-          echo RESPONSE
+          echo "$RESPONSE"
           if [ "$RESPONSE" -ne 200 ]; then
             echo "EC2 instance is not accessible."
             echo "continue=false" >> $GITHUB_ENV
