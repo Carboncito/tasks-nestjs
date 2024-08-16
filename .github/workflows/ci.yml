@@ -35,7 +35,7 @@ jobs:
       - name: Check if EC2 instance is running
         id: ec2-status
         run: |
-          instance_status=$(aws ec2 describe-instance-status --instance-ids ${{ env.INSTANCE_ID }} --query 'InstanceStatuses[0].InstanceState.Name' --output text)
+          instance_status=$(aws ec2 describe-instance-status --instance-ids ${{ secrets.INSTANCE_ID }} --query 'InstanceStatuses[0].InstanceState.Name' --output text)
           echo "EC2 instance status: $instance_status"
           if [ "$instance_status" != "running" ]; then
             echo "EC2 instance is not running."
