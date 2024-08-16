@@ -21,22 +21,28 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
       - name: Install dependencies
         run: yarn install
 
       - name: Run tests
         run: yarn test
 
-      - name: Check if EC2 instance is reachable
-        id: ping-server
+      - name: Check if EC2 instance is running
+        id: ec2-status
         run: |
-          if ! ping -c 1 ${{ secrets.EC2_IP }} > /dev/null; then
-            echo "EC2 instance is not reachable."
+          instance_status=$(aws ec2 describe-instance-status --instance-ids ${{ env.INSTANCE_ID }} --query 'InstanceStatuses[0].InstanceState.Name' --output text)
+          echo "EC2 instance status: $instance_status"
+          if [ "$instance_status" != "running" ]; then
+            echo "EC2 instance is not running."
             echo "continue=false" >> $GITHUB_ENV
           else
             echo "continue=true" >> $GITHUB_ENV
           fi
-        continue-on-error: true
 
       - name: Build project
         run: yarn run build
