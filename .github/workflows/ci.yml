@@ -23,7 +23,7 @@ jobs:
       # - name: Set up Node.js
       #   uses: actions/setup-node@v2
       #   with:
-      #     node-version: '18'
+      #     node-version: '20'
 
       # - name: Set up yarn
       #   run: npm install --global yarn
@@ -38,12 +38,14 @@ jobs:
       #   run: yarn run build
       #   run: yarn test
 
-      - name: LOGS
-        env:
-          EC2_HOST: ${{secrets.EC2_HOST}}
+      - name: Verify SSH Private Key
         run: |
-          echo "$TEST"
-          echo "$EC2_HOST"
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "SSH_PRIVATE_KEY is not set!"
+            exit 1
+          else
+            echo "SSH_PRIVATE_KEY is set."
+          fi
 
       - name: Set up SSH
         uses: shimataro/ssh-key-action@v2
